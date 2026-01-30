@@ -8,6 +8,12 @@ declare global {
   interface PostProcessWorkflowParams {
     postId: number;
     isPublished: boolean;
+    publishedAt?: string;
+  }
+
+  interface ScheduledPublishWorkflowParams {
+    postId: number;
+    publishedAt: string;
   }
 
   interface CommentModerationWorkflowParams {
@@ -25,6 +31,7 @@ declare global {
     POST_PROCESS_WORKFLOW: Workflow<PostProcessWorkflowParams>;
     COMMENT_MODERATION_WORKFLOW: Workflow<CommentModerationWorkflowParams>;
     SEND_EMAIL_WORKFLOW: Workflow<SendEmailWorkflowParams>;
+    SCHEDULED_PUBLISH_WORKFLOW: Workflow<ScheduledPublishWorkflowParams>;
   }
 
   type DB = DBType;

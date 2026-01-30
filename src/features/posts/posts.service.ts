@@ -349,13 +349,19 @@ export async function startPostProcessWorkflow(
   context: DbContext,
   data: StartPostProcessInput,
 ) {
+  let publishedAtISO: string | undefined;
+
   // Check if we need to auto-set the published date
   if (data.status === "published") {
     const post = await PostRepo.findPostById(context.db, data.id);
     if (post && !post.publishedAt) {
+      const now = new Date();
       await PostRepo.updatePost(context.db, post.id, {
-        publishedAt: new Date(),
+        publishedAt: now,
       });
+      publishedAtISO = now.toISOString();
+    } else if (post?.publishedAt) {
+      publishedAtISO = post.publishedAt.toISOString();
     }
   }
 
@@ -363,6 +369,28 @@ export async function startPostProcessWorkflow(
     params: {
       postId: data.id,
       isPublished: data.status === "published",
+      publishedAt: publishedAtISO,
     },
   });
+
+  // Defensively terminate any existing scheduled publish workflow for this post
+  const scheduledId = `post-${data.id}-scheduled`;
+  try {
+    const oldInstance =
+      await context.env.SCHEDULED_PUBLISH_WORKFLOW.get(scheduledId);
+    await oldInstance.terminate();
+  } catch {
+    // Instance doesn't exist or already completed, ignore
+  }
+
+  // If this is a future post, create a new scheduled publish workflow
+  if (data.status === "published" && publishedAtISO) {
+    const publishDate = new Date(publishedAtISO);
+    if (publishDate.getTime() > Date.now()) {
+      await context.env.SCHEDULED_PUBLISH_WORKFLOW.create({
+        id: scheduledId,
+        params: { postId: data.id, publishedAt: publishedAtISO },
+      });
+    }
+  }
 }
