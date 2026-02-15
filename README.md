@@ -1,7 +1,5 @@
 # Flare Stack Blog
 
-> 更新后部署失败？请查看 [CHANGELOG](./CHANGELOG.md) 了解 Breaking Changes。
-
 > **注意**：本项目专为 Cloudflare Workers 生态设计，深度集成 D1、R2、KV、Workflows 等服务，**仅支持部署在 Cloudflare Workers**。
 
 [部署指南](#部署指南) | [本地开发](#本地开发)
@@ -151,6 +149,7 @@ src/
 | :------------------------ | :----- | :------------------------------------------------ |
 | `TURNSTILE_SECRET_KEY`    | 运行时 | Cloudflare Turnstile 人机验证 Secret Key          |
 | `VITE_TURNSTILE_SITE_KEY` | 构建时 | Cloudflare Turnstile Site Key                     |
+| `GITHUB_TOKEN`            | 运行时 | GitHub API Token（版本更新检查，避免限流）        |
 | `UMAMI_SRC`               | 运行时 | Umami 基础 URL（Cloud: `https://cloud.umami.is`） |
 | `UMAMI_API_KEY`           | 运行时 | Umami Cloud API key（仅 Cloud 版本）              |
 | `UMAMI_USERNAME`          | 运行时 | Umami 用户名（仅自部署版本）                      |
