@@ -70,7 +70,7 @@ export async function checkForUpdate(
           context,
           VERSION_CACHE_KEYS.updateCheck,
           JSON.stringify(data),
-          { ttl: "1h" },
+          { ttl: "5m" },
         ),
       );
     } else {
@@ -79,7 +79,7 @@ export async function checkForUpdate(
         VERSION_CACHE_KEYS.updateCheck,
         UpdateCheckResultSchema,
         fetcher,
-        { ttl: "1h" },
+        { ttl: "5m" },
       );
     }
 
