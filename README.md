@@ -191,6 +191,20 @@ cp wrangler.example.jsonc wrangler.jsonc
 bun dev
 ```
 
+### 登录管理后台
+
+**方式一：邮箱密码注册（无需第三方服务）**
+
+1. 访问 `http://localhost:3000` 注册页面，使用 `.dev.vars` 中配置的 `ADMIN_EMAIL` 注册账号
+2. 开发环境下验证邮件不会真正发送，验证链接会打印到控制台，复制访问即可完成验证
+3. 验证后自动登录，系统根据 `ADMIN_EMAIL` 自动赋予管理员权限
+
+**方式二：GitHub OAuth**
+
+1. 前往 [GitHub Developer Settings](https://github.com/settings/developers) 创建一个 OAuth App
+2. Homepage URL 填 `http://localhost:3000`，Authorization callback URL 填 `http://localhost:3000/api/auth/callback/github`
+3. 将 Client ID 和 Client Secret 填入 `.dev.vars`
+
 ### 常用命令
 
 | 命令            | 说明                        |
@@ -226,3 +240,7 @@ bun dev
 > ```bash
 > wrangler d1 migrations apply DB
 > ```
+
+## 贡献
+
+欢迎贡献代码、报告问题或提出建议！请查看 [CONTRIBUTING.md](./CONTRIBUTING.md) 了解开发指南和代码规范。

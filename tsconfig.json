@@ -26,6 +26,7 @@
     "**/*.ts",
     "**/*.tsx",
     "eslint.config.mjs",
-    "./worker-configuration.d.ts"
+    "./worker-configuration.d.ts",
+    ".release-it.ts"
   ]
 }
