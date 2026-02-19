@@ -128,7 +128,24 @@ src/features/theme/themes/<your-theme>/
 
 ## Step-by-step：创建第一个主题
 
-### Step 1：创建主题目录
+### 快速开始：使用脚手架脚本
+
+运行以下命令，按提示输入主题名称（如 `my-theme`），即可在 `src/features/theme/themes/` 下生成完整的主题目录和满足契约的 placeholder 组件：
+
+```bash
+bun run create-theme
+```
+
+脚本会创建所有必需的布局、页面和骨架屏文件，组件实现为占位符，方便你在此基础上逐步替换为真实 UI。完成后按提示：
+
+1. 在 `vite.config.ts` 的 `z.enum(["default"])` 中加入新主题名
+2. 在 `.env` 中设置 `THEME=<your-theme>` 并启动开发
+
+---
+
+### 手动创建：Step 1 — 创建主题目录
+
+若希望从零开始，可手动创建目录：
 
 ```bash
 mkdir -p src/features/theme/themes/my-theme/layouts
