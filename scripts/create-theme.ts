@@ -2,15 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 import readline from "node:readline";
 
-const THEMES_DIR = path.join(
-  process.cwd(),
-  "src/features/theme/themes",
-);
+const THEMES_DIR = path.join(process.cwd(), "src/features/theme/themes");
 
 const THEME_NAME_REGEX = /^[a-z0-9-]+$/;
 
 function prompt(question: string): Promise<string> {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
   return new Promise((resolve) => {
     rl.question(question, (answer) => {
       rl.close();
@@ -41,7 +41,7 @@ function createTheme(name: string): void {
   // styles/index.css
   files.push({
     path: path.join(themeDir, "styles/index.css"),
-    content: `/* Theme: ${name} */\n`,
+    content: `/* Theme: ${name} */\n@import "tailwindcss";\n@import "@/styles/shared.css";\n`,
   });
 
   // layouts
@@ -80,9 +80,11 @@ export function UserLayout(_props: UserLayoutProps) {
     { dir: "home", page: "HomePage", props: "HomePageProps" },
     { dir: "posts", page: "PostsPage", props: "PostsPageProps" },
     { dir: "post", page: "PostPage", props: "PostPageProps" },
-    { dir: "friend-links", page: "FriendLinksPage", props: "FriendLinksPageProps" },
-    { dir: "search", page: "SearchPage", props: "SearchPageProps" },
-    { dir: "submit-friend-link", page: "SubmitFriendLinkPage", props: "SubmitFriendLinkPageProps" },
+    {
+      dir: "friend-links",
+      page: "FriendLinksPage",
+      props: "FriendLinksPageProps",
+    },
   ] as const;
 
   for (const { dir, page, props } of pageWithSkeleton) {
@@ -111,17 +113,35 @@ export { ${page}Skeleton } from "./skeleton";
     });
   }
 
-  // auth pages (page + index only)
-  const authPages = [
-    { dir: "login", page: "LoginPage", props: "LoginPageProps" },
-    { dir: "register", page: "RegisterPage", props: "RegisterPageProps" },
-    { dir: "forgot-password", page: "ForgotPasswordPage", props: "ForgotPasswordPageProps" },
-    { dir: "reset-password", page: "ResetPasswordPage", props: "ResetPasswordPageProps" },
-    { dir: "verify-email", page: "VerifyEmailPage", props: "VerifyEmailPageProps" },
+  // Standard pages (page + index only)
+  const standardPages = [
+    { dir: "search", page: "SearchPage", props: "SearchPageProps" },
+    {
+      dir: "submit-friend-link",
+      page: "SubmitFriendLinkPage",
+      props: "SubmitFriendLinkPageProps",
+    },
+    { dir: "auth/login", page: "LoginPage", props: "LoginPageProps" },
+    { dir: "auth/register", page: "RegisterPage", props: "RegisterPageProps" },
+    {
+      dir: "auth/forgot-password",
+      page: "ForgotPasswordPage",
+      props: "ForgotPasswordPageProps",
+    },
+    {
+      dir: "auth/reset-password",
+      page: "ResetPasswordPage",
+      props: "ResetPasswordPageProps",
+    },
+    {
+      dir: "auth/verify-email",
+      page: "VerifyEmailPage",
+      props: "VerifyEmailPageProps",
+    },
   ] as const;
 
-  for (const { dir, page, props } of authPages) {
-    const base = path.join(themeDir, "pages/auth", dir);
+  for (const { dir, page, props } of standardPages) {
+    const base = path.join(themeDir, "pages", dir);
     files.push({
       path: path.join(base, "page.tsx"),
       content: `import type { ${props} } from "@/features/theme/contract/pages";
@@ -166,10 +186,9 @@ import { PublicLayout } from "./layouts/public-layout";
 import { AuthLayout } from "./layouts/auth-layout";
 import { UserLayout } from "./layouts/user-layout";
 import { FriendLinksPage, FriendLinksPageSkeleton } from "./pages/friend-links";
-import { SearchPage, SearchPageSkeleton } from "./pages/search";
+import { SearchPage } from "./pages/search";
 import {
   SubmitFriendLinkPage,
-  SubmitFriendLinkPageSkeleton,
 } from "./pages/submit-friend-link";
 import { LoginPage } from "./pages/auth/login";
 import { RegisterPage } from "./pages/auth/register";
@@ -196,9 +215,7 @@ export default {
   FriendLinksPage,
   FriendLinksPageSkeleton,
   SearchPage,
-  SearchPageSkeleton,
   SubmitFriendLinkPage,
-  SubmitFriendLinkPageSkeleton,
   LoginPage,
   RegisterPage,
   ForgotPasswordPage,
@@ -215,14 +232,16 @@ export default {
 
   console.log(`\n✅ 主题 "${name}" 已创建于 ${themeDir}`);
   console.log("\n后续步骤：");
-  console.log("  1. 在 vite.config.ts 的 z.enum([\"default\"]) 中加入新主题名");
+  console.log('  1. 在 vite.config.ts 的 z.enum(["default"]) 中加入新主题名');
   console.log(`  2. 在 .env 中设置 THEME=${name} 并启动开发`);
 }
 
 async function main() {
   console.log("创建新主题\n");
 
-  const input = await prompt("请输入主题名称（仅允许小写字母、数字、连字符，如 my-theme）: ");
+  const input = await prompt(
+    "请输入主题名称（仅允许小写字母、数字、连字符，如 my-theme）: ",
+  );
 
   if (!input) {
     console.error("\n错误：主题名称不能为空。");
